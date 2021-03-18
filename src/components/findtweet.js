@@ -21,7 +21,7 @@ const FindTweet = ({setShowTweetForm,showTweetForm, dataUser, setDataUser, issue
 
 
         //peticion a BD
-        const response = await axios.post(`http://localhost:8080/sendtwit`, {dataUser})
+        const response = await axios.post(`https://sendemail-service.herokuapp.com/sendtwit`, {dataUser})
         console.log(response)
         const dataPayload = await response.data.data
         const getMp = await response.data.getMp

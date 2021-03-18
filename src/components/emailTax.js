@@ -16,7 +16,7 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
     }
     const send = async e => {
         e.preventDefault();
-        let response = await axios.post(`http://localhost:8080/taxpayers`, {issue, emailData})
+        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData})
         console.log(response)
     }
     const click = e => {
@@ -36,9 +36,9 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
                             type="text"
                             placeholder="Name"
                             name="name"
+                            onChange={handleChange}
                             required
-
-                        />
+                            />
                     </Col>
                     <Col>
                         <Form.Control
@@ -46,6 +46,7 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
                             type="email"
                             placeholder="Enter email"
                             name="email"
+                            onChange={handleChange}
                             required
                         />
                     </Col>

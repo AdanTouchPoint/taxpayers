@@ -2,9 +2,23 @@ import React from 'react'
 import Button from "react-bootstrap/cjs/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/cjs/Col";
+import axios from "axios";
 
-const EmailRegulation = ({setShowEmailRegulation, setShowForm, emailData, showEmailRegulation}) => {
+const EmailRegulation = ({setShowEmailRegulation,issue, setEmailData, setShowForm, emailData, showEmailRegulation}) => {
     // console.log(emailData)
+    const handleChange = e => {
+        e.preventDefault()
+        setEmailData({
+                ...emailData,
+                [e.target.name]: e.target.value
+            }
+        )
+    }
+    const send = async e => {
+        e.preventDefault();
+        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData})
+        console.log(response)
+    }
     const click = e => {
         e.preventDefault()
         setShowForm(false)
@@ -21,6 +35,7 @@ const EmailRegulation = ({setShowEmailRegulation, setShowForm, emailData, showEm
                             type="text"
                             placeholder="Name"
                             name="name"
+                            onChange={handleChange}
                             required
 
                         />
@@ -31,6 +46,7 @@ const EmailRegulation = ({setShowEmailRegulation, setShowForm, emailData, showEm
                             type="email"
                             placeholder="Enter email"
                             name="email"
+                            onChange={handleChange}
                             required
                         />
                     </Col>
@@ -60,6 +76,7 @@ const EmailRegulation = ({setShowEmailRegulation, setShowForm, emailData, showEm
             </p>
             <div>
                 <Button
+                    onClick={send}
                 >
                     Send
                 </Button>
