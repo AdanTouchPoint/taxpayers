@@ -6,7 +6,7 @@ import ListTweet from "./listtweet";
 import axios from "axios";
 
 const FindTweet = ({setShowTweetForm,showTweetForm, dataUser, setDataUser, issue,  mp, setMp, setSenator, senator}) => {
-    console.log('finTweeterPErros')
+
 
     const handleChange = e => {
         setDataUser({
@@ -22,7 +22,7 @@ const FindTweet = ({setShowTweetForm,showTweetForm, dataUser, setDataUser, issue
 
         //peticion a BD
         const response = await axios.post(`https://sendemail-service.herokuapp.com/sendtwit`, {dataUser})
-        console.log(response)
+
         const dataPayload = await response.data.data
         const getMp = await response.data.getMp
         setSenator(dataPayload)

@@ -1,23 +1,48 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Button from "react-bootstrap/cjs/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/cjs/Col";
 import axios from "axios";
+import Alert from "react-bootstrap/Alert";
 
-const EmailWaste = ({issue,emailData,setEmailData, setShowEmailWaste, setShowForm, showEmailWaste}) => {
+const EmailWaste = ({dataUser,setThankYou,setDataUser, setShowEmailTax, issue, emailData, setEmailData, setShowEmailWaste, setShowForm, showEmailWaste}) => {
     // console.log(emailData)
+    const [validated, setValidated] = useState(false);
+    const [error, setError] = useState(false)
     const handleChange = e => {
         e.preventDefault()
-        setEmailData({
-                ...emailData,
-                [e.target.name]: e.target.value
-            }
-        )
+        setDataUser({
+            ...dataUser,
+            [e.target.name]: e.target.value
+        })
+
     }
+    const {nameUser} = dataUser
     const send = async e => {
         e.preventDefault();
-        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData})
-        console.log(response)
+        const form = e.currentTarget;
+
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setValidated(true);
+        if (nameUser.trim() === '') {
+            setError(true)
+            return
+        }
+        setError(false)
+
+        let response = await axios.post(`http://localhost:8080/taxpayers`, {issue, emailData,dataUser})
+
+        if (response.status === 200) {
+            await
+                setThankYou(false)
+            setShowEmailWaste(true)
+        } else {
+
+            //   setTryAgain(false)
+        }
     }
     const click = e => {
         e.preventDefault()
@@ -26,7 +51,11 @@ const EmailWaste = ({issue,emailData,setEmailData, setShowEmailWaste, setShowFor
     }
     return (
         <div hidden={showEmailWaste}>
-            <p style={{textAlign:'center'}}> FROM add your full name nad surname</p>
+            <p style={{textAlign: 'center'}}> FROM add your full name nad surname</p>
+            {error ? <Alert variant={'danger'}>
+                All fields are required!
+            </Alert> : null }
+            <Form noValidate validated={validated}>
             <Form.Group controlId="nameEW">
                 <Form.Row>
                     <Col>
@@ -34,7 +63,7 @@ const EmailWaste = ({issue,emailData,setEmailData, setShowEmailWaste, setShowFor
                             plaintext
                             type="text"
                             placeholder="Name"
-                            name="name"
+                            name="nameUser"
                             onChange={handleChange}
                             required
 
@@ -44,14 +73,14 @@ const EmailWaste = ({issue,emailData,setEmailData, setShowEmailWaste, setShowFor
                         <Form.Control
                             plaintext
                             type="email"
-                            placeholder="Enter email"
-                            name="email"
+                            placeholder={"email"}
                             onChange={handleChange}
-                            required
+                            name="emailUser"
                         />
                     </Col>
                 </Form.Row>
             </Form.Group>
+            </Form>
             <div>
                 <p>
                     To: REPRESENTATIVE INFORMATION
@@ -76,10 +105,10 @@ const EmailWaste = ({issue,emailData,setEmailData, setShowEmailWaste, setShowFor
                 Thank you.
             </p>
             <div>
-                <Button onClick={send} >
+                <Button onClick={send}>
                     Send
                 </Button>
-                <Button onClick={click} >
+                <Button onClick={click}>
                     Back
                 </Button>
             </div>

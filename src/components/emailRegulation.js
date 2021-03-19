@@ -1,23 +1,47 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Button from "react-bootstrap/cjs/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/cjs/Col";
 import axios from "axios";
+import Alert from "react-bootstrap/Alert";
 
-const EmailRegulation = ({setShowEmailRegulation,issue, setEmailData, setShowForm, emailData, showEmailRegulation}) => {
+const EmailRegulation = ({dataUser,setDataUser,setShowEmailRegulation,issue,setThankYou,setTryAgain, setEmailData, setShowForm, emailData, showEmailRegulation}) => {
     // console.log(emailData)
+    const [validated, setValidated] = useState(false);
+    const [error, setError] = useState(false)
     const handleChange = e => {
         e.preventDefault()
-        setEmailData({
-                ...emailData,
-                [e.target.name]: e.target.value
-            }
-        )
+        setDataUser({
+            ...dataUser,
+            [e.target.name]: e.target.value
+        })
+
     }
+    const {nameUser} = dataUser
+    console.log(dataUser)
     const send = async e => {
-        e.preventDefault();
-        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData})
-        console.log(response)
+      const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setValidated(true);
+        if (nameUser.trim() === '') {
+            setError(true)
+            return
+        }
+        setError(false)
+
+        let response = await axios.post(`http://localhost:8080/taxpayers`, {issue, emailData, dataUser})
+
+        if ( response.status === 200)  {
+            setThankYou(false)
+            setShowEmailRegulation(true)
+        } else {
+
+            //     setShowEmailTax(true)
+            //   setTryAgain(false)
+        }
     }
     const click = e => {
         e.preventDefault()
@@ -27,6 +51,10 @@ const EmailRegulation = ({setShowEmailRegulation,issue, setEmailData, setShowFor
     return (
         <div hidden={showEmailRegulation}>
             <p> FROM add your full name nad surname</p>
+            {error ? <Alert variant={'danger'}>
+                All fields are required!
+            </Alert> : null }
+            <Form noValidate validated={validated}>
             <Form.Group controlId="nameER">
                 <Form.Row>
                     <Col>
@@ -34,7 +62,7 @@ const EmailRegulation = ({setShowEmailRegulation,issue, setEmailData, setShowFor
                             plaintext
                             type="text"
                             placeholder="Name"
-                            name="name"
+                            name="nameUser"
                             onChange={handleChange}
                             required
 
@@ -44,14 +72,14 @@ const EmailRegulation = ({setShowEmailRegulation,issue, setEmailData, setShowFor
                         <Form.Control
                             plaintext
                             type="email"
-                            placeholder="Enter email"
-                            name="email"
+                            placeholder={"email"}
                             onChange={handleChange}
-                            required
+                            name="emailUser"
                         />
                     </Col>
                 </Form.Row>
             </Form.Group>
+            </Form>
             <div>
                 <p>
                     To: REPRESENTATIVE INFORMATION

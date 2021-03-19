@@ -1,11 +1,12 @@
 import React from 'react'
 import Button from "react-bootstrap/cjs/Button";
 
-const List = ({issue, mps, setShowForm, setShowEmailTax, setShowEmailRegulation, setShowEmailWaste, setEmailData}) => {
-    console.log(mps)
+const List = ({issue, mps, setShowForm, setShowEmailTax, setShowEmailRegulation, setShowEmailWaste, setEmailData,emailData}) => {
+
     const click = e => {
         e.preventDefault()
-        setEmailData(mps)
+        setEmailData(
+            mps)
         switch (issue) {
             case '1' :
                 setShowForm(true)

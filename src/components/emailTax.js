@@ -1,23 +1,48 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Button from "react-bootstrap/cjs/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
+import Alert from "react-bootstrap/Alert";
 import Col from "react-bootstrap/cjs/Col";
 
-const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax, setEmailData}) => {
+const EmailTax = ({setDataUser,dataUser,issue,setThankYou, setTryAgain, setShowForm, emailData, setShowEmailTax, showEmailTax, setEmailData}) => {
     // console.log(emailData)
+    const [validated, setValidated] = useState(false);
+    const [error, setError] = useState(false)
     const handleChange = e => {
         e.preventDefault()
-        setEmailData({
-                ...emailData,
+        setDataUser({
+            ...dataUser,
                 [e.target.name]: e.target.value
-            }
-        )
+        })
+
     }
+    const {nameUser} = dataUser
+
     const send = async e => {
-        e.preventDefault();
-        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData})
-        console.log(response)
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setValidated(true);
+        if (nameUser.trim() === '') {
+            setError(true)
+            return
+        }
+        setError(false)
+
+        let response = await axios.post(`http://localhost:8080/taxpayers`, {issue, emailData,dataUser})
+
+        if ( response.status === 200)  {
+            //mostrar agradecimiento
+              setThankYou(false)
+              setShowEmailTax(true)
+        } else {
+            //mostrar intentar de nuevo
+            //     setShowEmailTax(true)
+            //   setTryAgain(false)
+        }
     }
     const click = e => {
         e.preventDefault()
@@ -27,7 +52,12 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
 
     return (
         <div hidden={showEmailTax}>
+
             <p> FROM add your full name nad surname</p>
+            {error ? <Alert variant={'danger'}>
+                All fields are required!
+            </Alert> : null }
+            <Form noValidate validated={validated}>
             <Form.Group controlId="nameET">
                 <Form.Row>
                     <Col>
@@ -35,7 +65,7 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
                             plaintext
                             type="text"
                             placeholder="Name"
-                            name="name"
+                            name="nameUser"
                             onChange={handleChange}
                             required
                             />
@@ -44,14 +74,14 @@ const EmailTax = ({issue, setShowForm, emailData, setShowEmailTax, showEmailTax,
                         <Form.Control
                             plaintext
                             type="email"
-                            placeholder="Enter email"
-                            name="email"
+                            placeholder={"email"}
                             onChange={handleChange}
-                            required
-                        />
+                            name="emailUser"
+                         />
                     </Col>
                 </Form.Row>
             </Form.Group>
+                </Form>
             <div>
                 <p>
                     To: REPRESENTATIVE INFORMATION
