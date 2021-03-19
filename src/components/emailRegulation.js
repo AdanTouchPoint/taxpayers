@@ -32,7 +32,7 @@ const EmailRegulation = ({dataUser,setDataUser,setShowEmailRegulation,issue,setT
         }
         setError(false)
 
-        let response = await axios.post(`http://localhost:8080/taxpayers`, {issue, emailData, dataUser})
+        let response = await axios.post(`https://sendemail-service.herokuapp.com/taxpayers`, {issue, emailData, dataUser})
 
         if ( response.status === 200)  {
             setThankYou(false)
