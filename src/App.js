@@ -8,6 +8,8 @@ import Col from "react-bootstrap/cjs/Col";
 import ThankYou from "./components/thankyou";
 
 function App() {
+    const [active, setActive] = useState(true)
+    const [variant, setVariant] = useState('dark')
     const [showEmailTax, setShowEmailTax] = useState(true)
     const [showEmailRegulation, setShowEmailRegulation] = useState(true)
     const [showEmailWaste, setShowEmailWaste] = useState(true)
@@ -28,7 +30,10 @@ function App() {
     const [showForm, setShowForm] = useState(true)
     const [showTweetForm, setShowTweetForm] = useState(true)
 
+
+
     const chooseIssue = e => {
+
         e.preventDefault();
        // if (dataUser.zipCode.trim() !== '')  {
        //     setDataUSer({
@@ -125,7 +130,7 @@ function App() {
                     <Col>
                         <Button
                             size="lg"
-                            variant="dark"
+                            variant={'dark'}
                             name={'1'}
                             onClick={chooseIssue}
                         >
@@ -135,9 +140,10 @@ function App() {
                     <Col>
                         <Button
                             size="lg"
-                            variant="dark"
+                            variant={'dark'}
                             name={'2'}
                             onClick={chooseIssue}
+
                         >
                             Regulation
                         </Button>
@@ -145,7 +151,7 @@ function App() {
                     <Col>
                         <Button
                             size="lg"
-                            variant="dark"
+                            variant={'dark'}
                             name={'3'}
                             onClick={chooseIssue}
                         >
